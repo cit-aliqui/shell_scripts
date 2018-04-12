@@ -13,6 +13,9 @@ TOM_URL=$(curl -s https://tomcat.apache.org/download-90.cgi | grep Core -A 20 | 
 TOM_DIR=$(echo $TOM_URL | awk -F / '{print $NF}' | sed 's/.tar.gz//')
 WAR_URL='https://github.com/cit-aliqui/APP-STACK/raw/master/student.war'
 JDBC_URL='https://github.com/cit-aliqui/APP-STACK/raw/master/mysql-connector-java-5.1.40.jar'
+CONN_URL='http://www-us.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.43-src.tar.gz'
+CONN_DIR=$(echo $CONN_URL | awk -F / '{print $NF}' | sed -e 's/.tar.gz//')
+
 
 headf() {
     echo -e "\t>> ${HE}${1}${N}"
@@ -103,13 +106,26 @@ APPF() {
     fi 
     sh bin/startup.sh &>>$LOG 
     Stat $? "Starting Tomcat"
-
-
 }
 
 WEBF() {
-###
-echo "WEB SERVER SETUP"
+    ###
+    headf "WEB SERVER SETUP"
+    yum install httpd httpd-devel gcc &>>$LOG 
+    Stat $? "Installing Web Server"
+    cd /root 
+    if [ -f "/etc/httpd/modules/mod_jk.so" ]; then 
+        Stat SKIP "Installing Tomcat Connector"
+    else 
+        wget -q -O- $CONN_URL | tar -xz
+        Stat $? "Downlading Tomcat Connector"
+        cd /root/$CONN_DIR/native 
+        ./configure --with-apxs=/usr/bin/apxs &>>$LOG 
+        make &>>$LOG 
+        make install $LOG 
+        Stat $? "Installing Tomcat Connector"
+    fi 
+    
 }
 
 
