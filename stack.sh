@@ -9,7 +9,8 @@ HE="\e[36;4m"
 LOG=/tmp/stack.log 
 rm -f /tmp/stack.log
 
-TOM_URL='https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.6/bin/apache-tomcat-9.0.6.tar.gz'
+TOM_URL=$(curl -s https://tomcat.apache.org/download-90.cgi | grep Core -A 20 | grep tar.gz | grep nofollow | cut -d ' ' -f2 | cut -d '"' -f2)
+TOM_DIR='/root/apache-tomcat-9.0.6'
 
 headf() {
     echo -e "\t>> ${HE}${1}${N}"
@@ -67,6 +68,9 @@ headf "APP SERVER SETUP"
 yum install java -y &>>$LOG 
 Stat $? "Installing Java"
 cd /root
+
+if [ -d "" ]
+
 wget -q -O- $TOM_URL | tar -xz
 Stat $? "Downloading Tomcat"
 }
