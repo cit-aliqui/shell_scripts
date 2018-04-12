@@ -11,6 +11,8 @@ rm -f /tmp/stack.log
 
 TOM_URL=$(curl -s https://tomcat.apache.org/download-90.cgi | grep Core -A 20 | grep tar.gz | grep nofollow | cut -d ' ' -f2 | cut -d '"' -f2)
 TOM_DIR=$(echo $TOM_URL | awk -F / '{print $NF}' | sed 's/.tar.gz//')
+WAR_URL='https://github.com/cit-aliqui/APP-STACK/raw/master/student.war'
+JDBC_URL='https://github.com/cit-aliqui/APP-STACK/raw/master/mysql-connector-java-5.1.40.jar'
 
 headf() {
     echo -e "\t>> ${HE}${1}${N}"
@@ -83,6 +85,15 @@ APPF() {
         wget -q -O- $TOM_URL | tar -xz
         Stat $? "Downloading Tomcat"
     fi
+
+    cd $TOM_DIR 
+    rm -rf webapps/* 
+
+    wget -q $WAR_URL -O webapps/student.war &>>$LOG 
+    Stat $? "Downloading WAR File"
+    wget -q $JDBC_URL -O lib/mysql-connector-java-5.1.40.jar &>>$LOG
+    Stat $? "Downloading JDBC JAR File"
+   
 }
 
 WEBF() {
