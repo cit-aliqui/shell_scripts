@@ -125,7 +125,19 @@ WEBF() {
         make install &>>$LOG 
         Stat $? "Installing Tomcat Connector"
     fi 
+    echo 'LoadModule jk_module modules/mod_jk.so
 
+JkWorkersFile conf.d/worker.properties
+JkMount /student local
+JkMount /student/* local' >/etc/httpd/conf.d/mod-jk.conf 
+
+    echo 'worker.list=local
+worker.local.host=localhost
+worker.local.port=8009' > /etc/httpd/conf.d/worker.properties 
+
+    systemctl enable httpd &>/dev/null 
+    systemctl restart httpd &>>$LOG 
+    Stat $? "Starting Web Server"
 }
 
 
