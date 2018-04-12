@@ -37,7 +37,7 @@ yum install mariadb-server -y &>>$LOG
 Stat $? "Installing MariaDB"
 
 systemctl start mariadb &>>$LOG 
-
+Stat $? "Starting MariaDB"
 
 }
 
