@@ -93,7 +93,18 @@ APPF() {
     Stat $? "Downloading WAR File"
     wget -q $JDBC_URL -O lib/mysql-connector-java-5.1.40.jar &>>$LOG
     Stat $? "Downloading JDBC JAR File"
-   
+    sed -i -e '/TestDB/ d' -e '$ i <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxActive="50" maxIdle="30" maxWait="10000"  username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://10.142.0.7:3306/studentapp"/>' conf/context.xml 
+
+    ps -ef | grep java | grep -v grep &>/dev/null 
+    if [ $? -eq 0 ]; then 
+        sh bin/shutdown.sh &>>$LOG 
+        Stat $? "Shutdown Tomcat"
+        sleep 5 
+    fi 
+    sh bin/startup.sh &>>$LOG 
+    Stat $? "Starting Tomcat"
+
+
 }
 
 WEBF() {
