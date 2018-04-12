@@ -40,7 +40,7 @@ systemctl start mariadb &>>$LOG
 Stat $? "Starting MariaDB"
 systemctl enable mariadb &>/dev/null 
 
-echo 'create database studentapp;
+echo "create database studentapp;
 use studentapp;
 CREATE TABLE Students(student_id INT NOT NULL AUTO_INCREMENT,
 	student_name VARCHAR(100) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE Students(student_id INT NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY (student_id)
 );
 grant all privileges on studentapp.* to 'student'@'%' identified by 'student@1';
-flush privileges;' >/tmp/student.sql 
+flush privileges;" >/tmp/student.sql 
 
 mysql </tmp/student.sql  &>>$LOG 
 Stat $? "Configuring DB Schema"
