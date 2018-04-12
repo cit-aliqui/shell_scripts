@@ -68,6 +68,7 @@ yum install java -y &>>$LOG
 Stat $? "Installing Java"
 cd /root
 wget -q -O- $TOM_URL | tar -xz
+Stat $? "Downloading Tomcat"
 }
 
 WEBF() {
