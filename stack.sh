@@ -37,12 +37,7 @@ yum install mariadb-server -y &>>$LOG
 Stat $? "Installing MariaDB"
 
 systemctl start mariadb &>>$LOG 
-if [ $? -eq 0 ]; then 
-    success "MariaDB Server started Successfully"
-else 
-    error "MariaDB Server  Failed"
-    exit 1
-fi 
+
 
 }
 
