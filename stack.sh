@@ -36,7 +36,7 @@ headf "DB SERVER SETUP"
 yum install mariadb-server -y &>>$LOG 
 Stat $? "Installing MariaDB"
 
-systemctl startx mariadb &>>$LOG 
+systemctl start mariadb &>>$LOG 
 Stat $? "Starting MariaDB"
 
 }
