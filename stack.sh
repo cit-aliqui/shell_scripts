@@ -61,7 +61,10 @@ Stat $? "Configuring DB Schema"
 
 APPF() {
 ###
-echo "APP SERVER SETUP"
+headf "APP SERVER SETUP"
+yum install java -y &>>$LOG 
+Stat $? "Installing Java"
+
 }
 
 WEBF() {
