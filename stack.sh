@@ -10,7 +10,7 @@ LOG=/tmp/stack.log
 rm -f /tmp/stack.log
 
 TOM_URL=$(curl -s https://tomcat.apache.org/download-90.cgi | grep Core -A 20 | grep tar.gz | grep nofollow | cut -d ' ' -f2 | cut -d '"' -f2)
-TOM_DIR=$(echo $TOM_URL | cut -d '/' -f10 | sed 's/.tar.gz//')
+TOM_DIR=$(echo $TOM_URL | awk -F / '{print $NF}' | sed 's/.tar.gz//')
 echo $TOM_DIR 
 exit
 
