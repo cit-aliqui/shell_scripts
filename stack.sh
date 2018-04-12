@@ -15,6 +15,8 @@ WAR_URL='https://github.com/cit-aliqui/APP-STACK/raw/master/student.war'
 JDBC_URL='https://github.com/cit-aliqui/APP-STACK/raw/master/mysql-connector-java-5.1.40.jar'
 CONN_URL='http://www-us.apache.org/dist/tomcat/tomcat-connectors/jk/tomcat-connectors-1.2.43-src.tar.gz'
 CONN_DIR=$(echo $CONN_URL | awk -F / '{print $NF}' | sed -e 's/.tar.gz//')
+RESOURCE='<Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxActive="50" maxIdle="30" maxWait="10000"  username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://MYSQL-DB_SERVER:3306/studentapp"/>'
+IPADDRESS=$(hostname -i)
 
 
 headf() {
@@ -96,7 +98,8 @@ APPF() {
     Stat $? "Downloading WAR File"
     wget -q $JDBC_URL -O lib/mysql-connector-java-5.1.40.jar &>>$LOG
     Stat $? "Downloading JDBC JAR File"
-    sed -i -e '/TestDB/ d' -e '$ i <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxActive="50" maxIdle="30" maxWait="10000"  username="student" password="student@1" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://10.142.0.7:3306/studentapp"/>' conf/context.xml 
+    sed -i -e '/TestDB/ d' -e "$ i $RESOURCE" conf/context.xml 
+    sed -i -e "s/MYSQL-DB_SERVER/$IPADDRESS/" conf/context.xml 
 
     ps -ef | grep java | grep -v grep &>/dev/null 
     if [ $? -eq 0 ]; then 
