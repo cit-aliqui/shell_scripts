@@ -14,24 +14,36 @@ headf() {
 }
 
 success() {
-    echo -e "-> ${G}${1}${N}"
+    echo -e "-> ${G}${1}${N} - SUCCESS"
 }
 
 error() {
-    echo -e "-> ${R}${1}${N}"
+    echo -e "-> ${R}${1}${N} - FAILED"
     echo -e "\t Check log file : $LOG"
+}
+
+Stat() {
+    if [ $1 -eq 0 ]; then 
+        success "$2"
+    else
+        error "$2"
+    fi 
 }
 
 DBF() {
 ###
 headf "DB SERVER SETUP"
 yum install mariadb-server -y &>>$LOG 
+Stat $? "Installing MariaDB"
+
+systemctl start mariadb &>>$LOG 
 if [ $? -eq 0 ]; then 
-    success "MariaDB Server installed Successfully"
+    success "MariaDB Server started Successfully"
 else 
-    error "MariaDB Server installation Failed"
+    error "MariaDB Server  Failed"
     exit 1
 fi 
+
 }
 
 APPF() {
