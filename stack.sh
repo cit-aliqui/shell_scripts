@@ -11,8 +11,6 @@ rm -f /tmp/stack.log
 
 TOM_URL=$(curl -s https://tomcat.apache.org/download-90.cgi | grep Core -A 20 | grep tar.gz | grep nofollow | cut -d ' ' -f2 | cut -d '"' -f2)
 TOM_DIR=$(echo $TOM_URL | awk -F / '{print $NF}' | sed 's/.tar.gz//')
-echo $TOM_DIR 
-exit
 
 headf() {
     echo -e "\t>> ${HE}${1}${N}"
@@ -22,12 +20,20 @@ success() {
     echo -e "-> ${G}${1} - SUCCESS${N}"
 }
 
+skip() {
+    echo -e "-> ${Y}${1} - SKIPPING${N}"
+}
+
 error() {
     echo -e "-> ${R}${1} - FAILED${N}"
     echo -e "\t Check log file : $LOG"
 }
 
 Stat() {
+    if [ $1 = SKIP ]; then 
+        skip "$2"
+        return
+    fi 
     if [ $1 -eq 0 ]; then 
         success "$2"
     else
@@ -36,45 +42,47 @@ Stat() {
 }
 
 DBF() {
-###
-headf "DB SERVER SETUP"
-yum install mariadb-server -y &>>$LOG 
-Stat $? "Installing MariaDB"
+    ###
+    headf "DB SERVER SETUP"
+    yum install mariadb-server -y &>>$LOG 
+    Stat $? "Installing MariaDB"
 
-systemctl start mariadb &>>$LOG 
-Stat $? "Starting MariaDB"
-systemctl enable mariadb &>/dev/null 
+    systemctl start mariadb &>>$LOG 
+    Stat $? "Starting MariaDB"
+    systemctl enable mariadb &>/dev/null 
 
-echo "create database if not exists studentapp;
-use studentapp;
-CREATE TABLE if not exists Students(student_id INT NOT NULL AUTO_INCREMENT,
-	student_name VARCHAR(100) NOT NULL,
-    student_addr VARCHAR(100) NOT NULL,
-	student_age VARCHAR(3) NOT NULL,
-	student_qual VARCHAR(20) NOT NULL,
-	student_percent VARCHAR(10) NOT NULL,
-	student_year_passed VARCHAR(10) NOT NULL,
-	PRIMARY KEY (student_id)
-);
-grant all privileges on studentapp.* to 'student'@'%' identified by 'student@1';
-flush privileges;" >/tmp/student.sql 
+    echo "create database if not exists studentapp;
+    use studentapp;
+    CREATE TABLE if not exists Students(student_id INT NOT NULL AUTO_INCREMENT,
+        student_name VARCHAR(100) NOT NULL,
+        student_addr VARCHAR(100) NOT NULL,
+        student_age VARCHAR(3) NOT NULL,
+        student_qual VARCHAR(20) NOT NULL,
+        student_percent VARCHAR(10) NOT NULL,
+        student_year_passed VARCHAR(10) NOT NULL,
+        PRIMARY KEY (student_id)
+    );
+    grant all privileges on studentapp.* to 'student'@'%' identified by 'student@1';
+    flush privileges;" >/tmp/student.sql 
 
-mysql </tmp/student.sql  &>>$LOG 
-Stat $? "Configuring DB Schema"
+    mysql </tmp/student.sql  &>>$LOG 
+    Stat $? "Configuring DB Schema"
 
 }
 
 APPF() {
 ###
-headf "APP SERVER SETUP"
-yum install java -y &>>$LOG 
-Stat $? "Installing Java"
-cd /root
+    headf "APP SERVER SETUP"
+    yum install java -y &>>$LOG 
+    Stat $? "Installing Java"
+    cd /root
 
-if [ -d "" ]
-
-wget -q -O- $TOM_URL | tar -xz
-Stat $? "Downloading Tomcat"
+    if [ -d "$TOM_DIR" ]; then 
+        Stat SKIP "Downloading Tomcat"
+    else
+        wget -q -O- $TOM_URL | tar -xz
+        Stat $? "Downloading Tomcat"
+    fi
 }
 
 WEBF() {
