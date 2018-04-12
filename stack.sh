@@ -14,11 +14,11 @@ headf() {
 }
 
 success() {
-    echo -e "-> ${G}${1}${N} - SUCCESS"
+    echo -e "-> ${G}${1} - SUCCESS${N}"
 }
 
 error() {
-    echo -e "-> ${R}${1}${N} - FAILED"
+    echo -e "-> ${R}${1} - FAILED${N}"
     echo -e "\t Check log file : $LOG"
 }
 
