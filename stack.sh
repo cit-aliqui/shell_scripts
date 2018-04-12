@@ -10,6 +10,9 @@ LOG=/tmp/stack.log
 rm -f /tmp/stack.log
 
 TOM_URL=$(curl -s https://tomcat.apache.org/download-90.cgi | grep Core -A 20 | grep tar.gz | grep nofollow | cut -d ' ' -f2 | cut -d '"' -f2)
+
+echo $TOM_URL 
+exit
 TOM_DIR='/root/apache-tomcat-9.0.6'
 
 headf() {
