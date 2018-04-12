@@ -111,7 +111,7 @@ APPF() {
 WEBF() {
     ###
     headf "WEB SERVER SETUP"
-    yum install httpd httpd-devel gcc &>>$LOG 
+    yum install httpd httpd-devel gcc -y &>>$LOG 
     Stat $? "Installing Web Server"
     cd /root 
     if [ -f "/etc/httpd/modules/mod_jk.so" ]; then 
@@ -125,7 +125,7 @@ WEBF() {
         make install $LOG 
         Stat $? "Installing Tomcat Connector"
     fi 
-    
+
 }
 
 
