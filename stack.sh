@@ -9,6 +9,8 @@ HE="\e[36;4m"
 LOG=/tmp/stack.log 
 rm -f /tmp/stack.log
 
+TOM_URL='https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.6/bin/apache-tomcat-9.0.6.tar.gz'
+
 headf() {
     echo -e "\t>> ${HE}${1}${N}"
 }
@@ -64,7 +66,8 @@ APPF() {
 headf "APP SERVER SETUP"
 yum install java -y &>>$LOG 
 Stat $? "Installing Java"
-
+cd /root
+wget -q -O- $TOM_URL | tar -xz
 }
 
 WEBF() {
