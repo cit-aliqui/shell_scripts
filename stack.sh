@@ -122,7 +122,7 @@ WEBF() {
         cd /root/$CONN_DIR/native 
         ./configure --with-apxs=/usr/bin/apxs &>>$LOG 
         make &>>$LOG 
-        make install $LOG 
+        make install &>>$LOG 
         Stat $? "Installing Tomcat Connector"
     fi 
 
